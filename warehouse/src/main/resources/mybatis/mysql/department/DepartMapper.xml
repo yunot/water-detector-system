@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.platform.sm.repository.DepartDao">
+	<resultMap type="com.isoftstone.platform.sm.entity.DepartmentBean"
+		id="departMap">
+		<id column="dep_id" property="depID" />
+		<result column="dep_name" property="depName" />
+		<result column="dep_describe" property="depDesc" />
+		<result column="org_id" property="orgID" />
+		<result column="dep_par_id" property="depParID" />
+		<result column="sort" property="sort" />
+	</resultMap>
+
+	<resultMap id="UserInfoMap"
+		type="com.isoftstone.platform.sm.entity.UserInfoBean">
+		<id column="user_id" property="userId" />
+		<result column="account" property="account" />
+		<result column="name" property="name" />
+		<result column="password" property="password" />
+		<result column="gender" property="gender" />
+		<result column="telephone" property="telephone" />
+		<result column="email" property="email" />
+		<result column="resetpwd" property="resetpwd" />
+		<result column="description" property="description" />
+		<result column="creator" property="creator" />
+		<result column="create_time" property="createTime" />
+		<result column="employee_id" property="employeeid" />
+	</resultMap>
+
+	<resultMap id="applyMap" type="com.isoftstone.platform.sm.entity.ApplyBean">
+		<id column="user_id" property="userId" />
+		<result column="dep_id" property="depId" />
+		<result column="dep_apply_id" property="depApplyId" />
+		<result column="status" property="status" />
+	</resultMap>
+
+	<resultMap id="PostdataMap" type="com.isoftstone.platform.sm.entity.PostBean">
+		<id column="post_id" property="postID" />
+		<result column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+		<result column="org_id" property="orgID" />
+		<result column="post_name" property="postName" />
+		<result column="post_describe" property="postDescribe" />
+		<result column="creat_time" property="creatTime" />
+		<result column="modify_time" property="modifyTime" />
+	</resultMap>
+
+	<sql id="queryDepartment">
+		select dep_id,dep_name,dep_describe,org_id,dep_par_id,sort
+		from sys_department
+		where 1 = 1
+	</sql>
+
+	<select id="queryDepartList" resultMap="departMap">
+		<include refid="queryDepartment" />
+	</select>
+
+	<select id="queryOrgNameByID" resultType="String">
+		select org_name from
+		sys_org where 1 = 1
+		and org_id = #{orgID}
+	</select>
+	<sql id="queryUserSQL">
+		select
+		sm.user_id,
+		sm.account,
+		sm.employee_id,
+		sm.name,
+		sm.gender,
+		sm.telephone from sm_user sm
+		left JOIN sys_user_dept ude on
+		sm.user_id = ude.user_id
+		where ude.dep_id = #{depID}
+
+	</sql>
+	<select id="queryStaffByDept" resultMap="UserInfoMap">
+		<include refid="queryUserSQL" />
+		<include refid="common.jqueryPageTail" />
+	</select>
+
+	<select id="queryStaffTotal" resultType="Integer">
+		select count(1) from (
+		<include refid="queryUserSQL" />
+		) m
+	</select>
+
+	<select id="queryDeptOrPostInfo" resultMap="departMap">
+		select
+		dep_id,dep_name,dep_describe,org_id
+		from
+		sys_department where
+		dep_id =
+		#{id}
+	</select>
+
+	<select id="queryParDeptId" resultType="Integer">
+		select dep_id from
+		sys_department where dep_name = (
+		select dict_label from sys_dict_data
+		where dict_value = #{deptParName})
+	</select>
+
+	<insert id="insertDept">
+		insert into sys_department
+		(dep_name,dep_describe,dep_par_id,org_id)
+		<if test="id != null">
+			values (#{deptName},#{deptDesc},#{id},#{orgID})
+		</if>
+		<if test="id == null">
+			values (#{deptName},#{deptDesc},"-1",#{orgID})
+		</if>
+	</insert>
+
+	<insert id="insertDict">
+		insert into sys_dict_data
+		(dict_label,dict_value,dict_type,is_default,status,remark)
+		values
+		(#{deptName},#{deptEngName},'sys_dept','N','0',#{deptName})
+	</insert>
+
+	<insert id="insertCH">
+		insert into sys_i18n
+		(inter_menu_id,inter_lang_id,inter_value)
+		values
+		(#{id},"1",#{deptName})
+	</insert>
+
+	<insert id="insertEH">
+		insert into sys_i18n
+		(inter_menu_id,inter_lang_id,inter_value)
+		values
+		(#{id},"2",#{deptEngName})
+	</insert>
+
+	<select id="queryInter" resultType="String">
+		select inter_value from
+		sys_i18n
+		where inter_menu_id = #{depID} and inter_lang_id = "2"
+	</select>
+
+	<select id="queryOrgID" resultType="Integer">
+		select org_id from sys_org
+		where org_name = (
+		select dict_label from sys_dict_data where
+		dict_value = #{orgName})
+	</select>
+
+	<select id="queryDictID" resultType="Integer">
+		select dict_code from
+		sys_dict_data where dict_label = #{deptName}
+	</select>
+
+	<update id="updateDept">
+		update sys_department set dep_name = #{deptName} ,
+		dep_describe = #{deptDesc}
+		where dep_id = #{id}
+	</update>
+
+	<update id="updateDict">
+		update sys_dict_data set dict_label = #{deptName} ,
+		dict_value = #{deptEngName}
+		where dict_code = #{id}
+	</update>
+
+	<update id="updateCH">
+		update sys_i18n set inter_value = #{deptName} where
+		inter_menu_id = #{id} and inter_lang_id = "1"
+	</update>
+
+	<update id="updateEH">
+		update sys_i18n set inter_value = #{deptEngName}
+		where
+		inter_menu_id = #{id} and inter_lang_id = "2"
+	</update>
+
+	<select id="queryDictIDByDeptID" resultType="Integer">
+		select dict_code
+		from
+		sys_dict_data where dict_label = (select dep_name from
+		sys_department where dep_id=#{id})
+	</select>
+
+	<select id="querySonDept" resultMap="departMap">
+		select * from sys_department
+		where dep_par_id = #{id}
+	</select>
+
+	<select id="queryStaffBelongToDept" resultMap="UserInfoMap">
+		select * from
+		sys_user_dept where dep_id = #{id}
+	</select>
+
+	<delete id="deleteDept">
+		delete from sys_department where dep_id = #{id}
+	</delete>
+
+	<delete id="deleteDictDept">
+		delete from sys_dict_data where dict_code = #{id}
+	</delete>
+
+	<delete id="deleteInter">
+		delete from sys_i18n where inter_menu_id = #{id}
+	</delete>
+
+	<select id="queryCurDeptLock" resultType="Integer">
+		select dep_par_id from
+		sys_department where dep_name = (select dict_label from sys_dict_data
+		where dict_value = #{curdeptLock})
+	</select>
+
+	<update id="updateCurDeptLock">
+		update sys_department
+		set dep_par_id = (select
+		sd.dep_id from
+		(select dep_id from sys_department where dep_name =
+		(select dict_label from sys_dict_data
+		where dict_value =
+		#{pardeptLock})) sd)
+		where dep_name = (select dict_label from
+		sys_dict_data
+		where dict_value = #{curdeptLock})
+	</update>
+
+	<update id="updateCurDeptUnlock">
+		update sys_department set dep_par_id = "-1"
+		where
+		dep_name = (
+		select dict_label from sys_dict_data where dict_value =
+		#{curdeptLock}
+		)
+	</update>
+
+	<select id="queryDeptAndSonDept" resultMap="departMap">
+		select
+		dep_name,dep_id from
+		sys_department
+		where dep_id = (select dep_id from
+		sys_department where
+		dep_id = #{id})
+		or dep_par_id = (select dep_id from
+		sys_department where dep_id =
+		#{id})
+	</select>
+
+	<select id="queryStaffWithoutDept" resultMap="UserInfoMap">
+		<include
+			refid="com.isoftstone.platform.sm.repository.UserInfoDao.queryUserSQL" />
+		and user_id not in (
+		select user_id from sys_user_dept
+		)
+		and user_id !=
+		"1"
+	</select>
+
+	<select id="queryStaffExist" resultType="Integer">
+		select user_id from
+		sys_user_dept where user_id = #{userId}
+	</select>
+
+	<insert id="insertStaff">
+		insert into sys_user_dept (user_id,dep_id)
+		values
+		(#{userId},#{deptId})
+	</insert>
+
+	<update id="updateStaff">
+		update sys_user_dept set dep_id = #{deptId} where
+		user_id = #{userId}
+	</update>
+
+	<select id="queryDeptByStaff" resultType="String">
+		select dep_name from
+		sys_department where dep_id =
+		(select dep_id from sys_user_dept where
+		user_id = #{userID})
+	</select>
+
+	<update id="apply">
+		update sys_user_dept set dep_apply_id = (
+		select
+		dep_id from sys_department where dep_name = (
+		select dict_label from
+		sys_dict_data where dict_value = #{applyDept}
+		)
+		)
+		,status =
+		"0" where
+		user_id = #{userID}
+	</update>
+
+	<select id="queryApplyInfoByStaff" resultMap="applyMap">
+		select
+		dep_id,dep_apply_id,status from sys_user_dept where user_id =
+		#{userID}
+	</select>
+
+	<select id="queryDeptNameById" resultType="String">
+		select dep_name from
+		sys_department where dep_id=#{depId}
+	</select>
+
+	<sql id="queryStaff">
+		select user_id,dep_id,dep_apply_id,status from
+		sys_user_dept where dep_id in (
+		select dep_id from sys_department where
+		dep_id = (
+		select dep_id from sys_user_dept where user_id = #{userId})
+		or dep_par_id = (select dep_id from sys_user_dept where user_id =
+		#{userId})
+		)
+	</sql>
+
+	<select id="queryApplyStaffList" resultMap="applyMap">
+		<include refid="queryStaff" />
+		and status = 0
+	</select>
+
+	<select id="queryStaffNameByID" resultType="String">
+		select name from
+		sm_user where user_id = #{userId}
+	</select>
+
+	<update id="updateStaffDeptWithPass">
+		update sys_user_dept set dep_id = dep_apply_id ,
+		status = 1
+		where user_id = #{staffID}
+	</update>
+
+	<update id="updateStaffDeptWithRefuse">
+		update sys_user_dept set status = 2
+		where user_id =
+		#{staffID}
+	</update>
+
+	<select id="queryApplyStaffListWithoutStatus" resultMap="applyMap">
+		<include refid="queryStaff" />
+	</select>
+
+	<select id="queryStaffList" resultMap="applyMap">
+		select
+		user_id,dep_id,dep_apply_id,status from sys_user_dept
+	</select>
+
+	<update id="manageDept">
+		update sys_user_dept set dep_apply_id = (
+		select
+		dep_id from sys_department where dep_name = (
+		select dict_label from
+		sys_dict_data where dict_value = #{applyDept}
+		)
+		)
+		,dep_id = (
+		select
+		dep_id from sys_department where dep_name = (
+		select dict_label from
+		sys_dict_data where dict_value = #{applyDept}
+		)
+		),status =
+		"1" where
+		user_id = #{userID}
+	</update>
+
+	<select id="queryPostListByDept" resultMap="PostdataMap">
+		select
+		post_id,post_name,post_describe from sm_post where
+		post_id in (
+		select
+		distinct post_id from sm_post_ref_user where user_id in (
+		select
+		user_id from sys_user_dept where dep_id = #{depID}
+		)
+		)
+	</select>
+	
+	<select id="findByPost" resultType="String">
+		select user_id from sm_post_ref_user where
+		post_id = #{postId} and user_id = #{userId}
+	</select>
+</mapper>

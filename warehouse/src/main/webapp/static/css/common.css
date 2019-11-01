@@ -1,0 +1,194 @@
+.cbe-button {
+		padding: .4em 1em .4em 20px;
+		text-decoration: none;
+		position: relative;
+	}
+	
+
+		
+.cbe-button span.ui-icon {
+		margin: 0 5px 0 0;
+		position: absolute;
+		left: .2em;
+		top: 50%;
+		margin-top: -8px;
+	}
+	
+.mand {
+    float: right;
+    color: red;
+    margin-right: 5px;
+    padding-top: 5px;
+}
+
+.ui-combobox {
+		position: relative;
+		display: inline-block;
+		
+	}
+	.ui-combobox-toggle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		margin-left: -1px;
+		padding: 0;
+		/* adjust styles for IE 6/7 */
+		*height: 1.7em;
+		*top: 0.1em;
+	}
+	.ui-combobox-input {
+		margin: 0;
+		padding: 0.3em;
+		width:172px;
+	}
+	
+	
+
+.heaerbox {
+    height: 100px;
+    padding: 10px 0px;
+    background: #1961b9;
+    width: 100%;
+    min-width: 1200px;
+    
+    
+}
+
+.header_inner {
+    width: 120px;
+    margin: 0px auto;
+    margin-left: 0px;
+}
+
+.pull-left {
+    float: left !important;
+}
+
+.welcom {
+    font-size: 20px;
+    border-left: 1px solid #ccc;
+    padding-left: 15px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.banner-bg {
+    position: relative;
+    z-index: 3;
+    height: 350px;
+    top: 61px;
+}
+
+.login-wrap {
+    position: relative;
+    height: 450px;
+    width: 100%;
+}
+
+.header_title {
+    text-align: center;
+    font-size: 5vw;
+    font-family: cursive;
+    color: deepskyblue;
+}
+
+.login-form {
+    top: 30%;
+    left: 40%;
+    right: 0;
+    position: absolute;
+    border: 1px solid #dedede;
+    border-top: 3px solid #0063af;
+    padding: 3px;
+    height: 350px;
+    width: 285px;
+    background: #a8d8eb;
+    z-index: 4;
+}
+
+.form {
+    padding: 6px;
+}
+
+.form .item_1 {
+    height: 37px;
+    width: 100%;
+    position: relative;
+    margin-bottom: 15px;
+    font-size: 12px;
+}
+
+.form .pass-label {
+    display: block;
+    float: left;
+    height: 35px;
+    width: 80%;
+    line-height: 38px;
+    font-size: 15px;
+    color: #919191;
+    text-align: left;
+    padding: 0;
+    padding-left:8px;
+    border: none;
+    background-color: #fff;
+	border-radius: 20px;
+}
+
+.pass-label {
+	border-radius: 20px;
+}
+
+.control-label {
+    width: 68px;
+    float: left;
+    line-height: 32px;
+    font-size: 14px;
+    color: #666;
+    padding-left: 5px;
+    font-weight: normal;
+}
+.btn-danger {
+    color: #fff;
+    background-color: #ff6666;
+    border-color: #0480f0;
+}
+.btn {
+    display: inline-block;
+    vertical-align: middle;
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px transparent;
+    position: relative;
+    background: #e1e1e1;
+    transition-property: color;
+    transition-duration: 0.3s;
+    background-color: #0063af;
+    width: 100%;
+    height: 36px;
+    text-align: center;
+    touch-action: manipulation;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+.item_1 span i:before {
+    padding-left: 10px;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 24px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+        width: 21px;
+    height: 15px;
+    top: 5px;
+    left:233px;
+    position: absolute;
+}
+
+	
+ 	

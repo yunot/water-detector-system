@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="common">
+	<sql id="jqueryPageTail">
+	   
+	   
+		<if test = "paging !=null">
+			<if test="paging.sortname!=null and 'undefined' neq paging.sortname">
+				 order by ${paging.sortname} ${paging.sortorder}  
+			</if>
+			<if test="paging.page!=null and paging.rp !=null">
+				 limit #{paging.start},#{paging.rp}
+			</if>
+		</if>
+	</sql>
+	
+</mapper> 

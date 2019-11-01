@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.platform.sm.repository.MenuDao">
+	<resultMap type="com.isoftstone.platform.sm.entity.MenuBean"
+		id="menuMap">
+		<id column="menu_id" property="menuID" />
+		<result column="parent_id" property="parentID" />
+		<result column="menu_type" property="menuType" />
+		<result column="menu_name" property="menuName" />
+		<result column="menu_url" property="menuUrl" />
+		<result column="icon_class" property="iconClass" />
+		<result column="sort" property="sort" />
+	</resultMap>
+
+	<sql id="queryMenu">
+		select distinct
+		menu_id,parent_id,menu_name,menu_url,icon_class,sort
+		from
+		sys_menu
+	</sql>
+
+	<select id="queryMenuInfo" resultMap="menuMap">
+		<include refid="queryMenu" />
+		<if test='userID != "1"'>
+			where 1 = 1 and menu_id in (
+			select menu_id from sm_role_ref_privilege where 1 = 1 and
+			role_id in
+			(
+			select role_id from sm_user_ref_role where 1 = 1 and user_id =
+			#{userID}
+			)
+			)
+		</if>
+		order by sort DESC
+	</select>
+
+	<select id="queryBtnCount" resultType="Integer">
+		select count(1) from (
+		<include refid="queryMenu" />
+		) m
+		where 1 = 1 and parent_id = #{parentID}
+	</select>
+
+	<select id="queryValueByLang" resultType="String">
+		select inter_value from
+		sys_i18n
+		where inter_menu_id = #{menuId} and inter_lang_id =
+		(select
+		lang_id from sys_language where lang_type = #{lang})
+	</select>
+
+	<select id="selectPermsByUserId" parameterType="Long"
+		resultType="String">
+		select distinct menu_privilege
+		from sys_menu m
+		left join sm_role_ref_privilege rm on m.menu_id = rm.menu_id
+		left join sm_user_ref_role ur on rm.role_id = ur.role_id
+		where ur.user_id = #{userId}
+	</select>
+</mapper>

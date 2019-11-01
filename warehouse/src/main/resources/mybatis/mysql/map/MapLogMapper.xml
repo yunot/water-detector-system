@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.map.repository.MapLogDao">
+ <resultMap id="MapLogMap" type="com.isoftstone.map.entity.MapLogBean" >
+   <id column="location_log_id" property="locationLogId"/>
+   <result column="name" property="name"/>
+   <result column="lon" property="lon"/>
+   <result column="lat" property="lat"/>
+   <result column="city" property="city"/>
+   <result column="log_datetime" property="logDatetime"/>
+ </resultMap>
+ <sql id="queryMapLogSQL">
+    select location_log_id,name,lon,lat,city,log_datetime from map_location_log where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchCity != null and '' neq search.searchCity">
+       and city like CONCAT('%',#{search.searchCity},'%')
+       </if>
+       <if test="search.searchName != null and '' neq search.searchName">
+       and name like CONCAT('%',#{search.searchName},'%')
+       </if>
+    </if>
+   
+ </sql>
+ <select id="queryMapLogByPageList" resultMap="MapLogMap">
+    <include refid="queryMapLogSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="queryMapLogTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="queryMapLogSQL"></include>
+     )  m
+ </select> 
+
+	<delete id="deleteMapLog">
+   	delete from map_location_log 
+   	where 
+   	location_log_id in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+ <insert id="addMapLogDail">
+   insert into map_location_log (
+   name,
+   lon,
+   lat,
+   city,
+   log_datetime)
+   values(
+   #{mapLog.name},
+   #{mapLog.lon},
+   #{mapLog.lat},
+   #{mapLog.city},
+   sysdate()
+   )
+  
+  </insert>
+ 
+</mapper>

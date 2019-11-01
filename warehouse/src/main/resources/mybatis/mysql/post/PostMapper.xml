@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.platform.sm.repository.PostDao">
+	<resultMap id="PostdataMap" type="com.isoftstone.platform.sm.entity.PostBean">
+		<id column="post_id" property="postID" />
+		<result column="role_id" property="roleId"/>
+		<result column="role_name" property="roleName"/>
+		<result column="org_id" property="orgID"/>
+		<result column="post_name" property="postName"/>
+		<result column="post_describe" property="postDescribe"/>
+		<result column="creat_time" property="creatTime"/>
+		<result column="modify_time" property="modifyTime"/>		
+	</resultMap>
+	
+	<resultMap id="UserInfoMap"
+               type="com.isoftstone.platform.sm.entity.UserInfoBean">
+        <id column="user_id" property="userId"/>
+        <result column="account" property="account"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="gender" property="gender"/>
+        <result column="telephone" property="telephone"/>
+        <result column="email" property="email"/>
+        <result column="resetpwd" property="resetpwd"/>
+        <result column="description" property="description"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="employee_id" property="employeeid"/>
+    </resultMap>
+    
+	<select id="getPostDataList" resultMap="PostdataMap">
+		<include refid="queryPostSQL"/>
+		<include refid="common.jqueryPageTail"/>
+	</select>
+	
+	<sql id="queryPostSQL">
+		SELECT r.role_name,s.post_id,s.role_id,s.org_id,s.post_name,s.post_describe,s.creat_time,s.modify_time
+		FROM  sm_post s
+		LEFT JOIN role_table r
+		ON r.role_id=s.role_id  where s.del_flag = '0' 	
+		<if test="post != null">
+			<if test="post.searchName != null and '' neq post.searchName">
+			<!-- and post_name like CONCAT('%',#{post.searchName},'%') -->
+			and post_name like CONCAT('%',#{post.searchName},'%')
+			</if>
+		</if>
+	</sql>
+	
+	<select id="queryPostTotal" resultType="Integer">
+		select COUNT(1) from (
+		<include refid="queryPostSQL"/>
+		) m
+	</select>
+	
+	<select id="queryDetail" resultMap="PostdataMap">
+		select post_id,role_id,org_id,post_Name,post_Describe,creat_time,modify_time from sm_post
+		where post_id = #{postID}
+	</select>
+	
+	<sql id="queryUserSQL">
+		select user.user_id,
+		            user.account,
+		            user.name,
+		            user.gender,
+		            user.telephone,
+		            user.email,
+		            user.description,
+		            user.creator,
+		            user.create_time,
+		            user.employee_id
+		from sm_user user,sm_post_ref_user pru
+		where user.user_id=pru.user_id and  pru.post_id = #{postID}
+
+	</sql>
+	
+	<select id="queryUserTotal" resultType="Integer">
+		select COUNT(1) from (
+		<include refid="queryUserSQL"/>
+		) m
+	</select>
+	
+	<select id="queryUserByPageList" resultMap="UserInfoMap">
+        <include refid="queryUserSQL"></include>
+     
+        <include refid="common.jqueryPageTail"></include>
+    </select>
+         
+    <insert id="addPostDail">
+	   INSERT INTO sm_post (
+	       role_id,
+	       org_id,
+		   post_name,
+		   post_describe,
+		   creat_time,
+		   modify_time,
+		   del_flag
+	   ) 
+	   VALUES 
+	   (
+	       #{addPostDail.roleId},
+	       #{addPostDail.orgID},
+		   #{addPostDail.postName},
+		   #{addPostDail.postDescribe},
+		   sysdate(),
+		   sysdate(),
+		   "0"
+	   )
+	</insert>
+	
+	<delete id="delPostDail">
+        delete from sm_post
+        where
+        post_id in (
+        <foreach collection="ids" item="idItem" separator=",">
+            #{idItem}
+        </foreach>
+        )
+    </delete>
+    
+    <delete id="delPostUser">
+        delete from sm_post_ref_user
+        where
+        user_id in (
+        <foreach collection="userIDs" item="userID" separator=",">
+            #{userID}
+        </foreach>
+        ) and 
+        post_id = #{postID}
+    </delete>
+    
+    <select id="getPostRefUserDataList" resultType="String">
+		select user_id from sm_post_ref_user where post_id = #{postID}
+
+	</select>
+	
+</mapper>

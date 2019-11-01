@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.contract.repository.ContractDao">
+
+<resultMap id="ContractInfoMap" type="com.isoftstone.contract.entity.ContractInfoBean" >
+   <id column="docutment_info_id" property="docutmentInfoId"/>
+   <result column="docutment_info_name" property="docutmentInfoName"/>
+   <result column="docutment_head_data_id" property="docutmentHeadDataId"/>
+   <result column="docutment_body_data_id" property="docutmentBodyDataId"/>
+   <result column="docutment_pict_data_id" property="docutmentPictDataId"/>
+   <result column="create_time" property="createTime"/>
+   <result column="modify_time" property="modifyTime"/>
+ </resultMap>
+ 
+ <resultMap id="BaseMap" type="com.isoftstone.platform.entity.BaseSelectBean">
+		<id column="docutment_head_data_id" property="value" />
+		<result column="docutment_info_name" property="label"/>
+	</resultMap>
+
+<sql id="queryContractSQL">
+	select docutment_info_id,docutment_info_name,docutment_head_data_id,
+	docutment_body_data_id,create_time,modify_time from office_document_info where 1=1
+</sql>
+<select id="queryContractByPageList" resultMap="ContractInfoMap">
+    <include refid="queryContractSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ <select id="queryContractTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="queryContractSQL"></include>
+     )  m
+ </select> 
+ 
+ <select id="getHtmlContentHead" resultType="String" >
+ 	select docutment_data from office_document_data where docutment_data_id = #{docutmentHeadDataId}
+ </select>
+ 
+ <select id="getHtmlContentBody" resultType="String" >
+ 	select docutment_data from office_document_data where docutment_data_id = #{docutmentBodyDataId}
+ </select>
+ 
+<select id="getAll" resultMap="BaseMap">
+		select docutment_head_data_id,docutment_info_name from office_document_info 		
+</select>
+
+ <update id="updateHtmlBody"  >
+ update office_document_data set docutment_data =#{body} where docutment_data_id=#{docutmentBodyDataId}
+ </update>
+ 
+ <insert id="newContractInfo">
+        insert into office_document_info (
+        docutment_info_name, 
+        docutment_head_data_id,
+        docutment_body_data_id,
+        docutment_pict_data_id,
+        create_time,
+        modify_time)
+        values (
+        #{contractInfo.docutmentInfoName},
+        #{contractInfo.docutmentHeadDataId}, 
+        #{contractInfo.docutmentBodyDataId},
+        #{contractInfo.docutmentPictDataId},
+        SYSDATE(),
+        SYSDATE())
+    </insert>
+    
+	<insert id="newContractData">
+        insert into office_document_data (
+        docutment_data_id,
+        docutment_data_name,
+        docutment_data,
+        create_time,
+        modify_time)
+        values (
+        #{contractData.docutmentDataId},
+        #{contractData.docutmentDataName},
+        #{contractData.docutmentData},
+        SYSDATE(),
+        SYSDATE())
+    </insert>
+</mapper>

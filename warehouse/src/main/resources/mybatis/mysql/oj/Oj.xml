@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.oj.repository.OjDao">
+ <resultMap id="SubjectMap" type="com.isoftstone.oj.entity.SubjectBean" >
+	<id column="subject_id" property="subjectId" />
+	<result column="subject_name" property="subjectName" />
+	<result column="subject_desc" property="subjectDesc" />
+	<result column="subject_input" property="subjectInput" />
+	<result column="subject_out" property="subjectOut" />
+	<result column="sample_input" property="sampleInput" />
+	<result column="sample_out" property="sampleOut" />
+ </resultMap>
+ 
+ <sql id="querySubjectSQL">
+    select subject_id,subject_name,subject_desc,subject_input,subject_out,sample_input,sample_out from t_subject where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchName != null and '' neq search.searchName">
+       and subject_name like CONCAT('%',#{search.searchName},'%')
+       </if>       
+    </if>
+ </sql>
+ 
+ <select id="querySubjectByPageList" resultMap="SubjectMap">
+    <include refid="querySubjectSQL"></include>
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+ <select id="querySubjectById" resultMap="SubjectMap">
+ 	select n.subject_name,n.subject_desc,n.subject_input,n.subject_out,n.sample_input,n.sample_out from (
+ 		<include refid="querySubjectSQL"></include>
+ 	) n where subject_id=#{id}
+ 	
+ </select>
+ 
+  <select id="querySubjectTotal" resultType="Integer">
+    select COUNT(1) from ( 
+       <include refid="querySubjectSQL"></include>
+     )  m
+ </select> 
+ 
+ </mapper>

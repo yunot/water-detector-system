@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
+
+
+    <context:component-scan base-package="com.isoftstone"/>
+    <context:annotation-config></context:annotation-config>
+    <!-- properties 资源文件 -->
+    <bean id="propertiesConfig"
+          class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations" value="classpath*:/application.properties"/>
+    </bean>
+
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="properties" ref="propertiesConfig"></property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.isoftstone.rookie"/>
+        <!-- 显式指定Mapper文件位置 -->
+        <property name="mapperLocations" value="classpath*:mybatis/mysql/**/*.xml"/>
+    </bean>
+
+    <!-- 数据源配置, 使用Tomcat JDBC连接池 -->
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+          destroy-method="close">
+        <!-- Connection Info -->
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password"
+                  value="#{T(com.isoftstone.platform.common.uitl.AES128Util).Decrypt(propertiesConfig['jdbc.password'],propertiesConfig['jdbc.encrypt.key'],propertiesConfig['jdbc.encrypt.encoding'])}"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.isoftstone"/>
+        <property name="annotationClass"
+                  value="org.springframework.stereotype.Repository"/>
+    </bean>
+
+
+    <!-- 定义aspectj -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <!-- spring 注解事务，不要与声明事务冲突 -->
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <!-- spring 声明式事务处理 -->
+    <bean id="txManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <!--  捕获异常主事务不回滚，抛出异常主事务回滚 -->
+        <property name="globalRollbackOnParticipationFailure" value="false"></property>
+    </bean>
+
+    <aop:config>
+        <aop:pointcut id="fooServiceMethods"
+                      expression="execution(* com.isoftstone..service.impl.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="fooServiceMethods"/>
+    </aop:config>
+
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="load*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="*_tran_new" propagation="REQUIRES_NEW" isolation="READ_COMMITTED"/>
+            <tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <!-- 配置国际化资源文件 -->
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="basenames">
+            <array>
+                <value>i18n/message</value>
+            </array>
+        </property>
+    </bean>
+
+    <mvc:interceptors>
+        <bean id="localeChangeInterceptor"
+              class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="siteLanguage"/>
+        </bean>
+    </mvc:interceptors>
+
+    <bean id="messageHolder" class="com.isoftstone.platform.common.MessageHolder">
+        <property name="messageSource" ref="messageSource"/>
+    </bean>
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="${default.language}"/>
+    </bean>
+    <task:annotation-driven/>
+</beans>

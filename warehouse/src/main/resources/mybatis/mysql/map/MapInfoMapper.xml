@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.map.repository.MapInfoDao">
+ <resultMap id="MapInfoMap" type="com.isoftstone.map.entity.MapInfoBean" >
+   <id column="location_id" property="locationId"/>
+   <result column="name" property="name"/>
+   <result column="lon" property="lon"/>
+   <result column="lat" property="lat"/>
+   <result column="city" property="city"/>
+   <result column="soak" property="soak"/>
+ </resultMap>
+ <sql id="queryMapInfoSQL">
+    select location_id,name,lon,lat,city,soak from map_location_info where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchCity != null and '' neq search.searchCity">
+       and city like CONCAT('%',#{search.searchCity},'%')
+       </if>
+       <if test="search.searchSoak != null and '' neq search.searchSoak">
+       and soak like CONCAT('%',#{search.searchSoak},'%')
+       </if>
+       <if test="search.searchName != null and '' neq search.searchName">
+       and name like CONCAT('%',#{search.searchName},'%')
+       </if>
+    </if>
+   
+ </sql>
+ <select id="queryMapInfoByPageList" resultMap="MapInfoMap">
+    <include refid="queryMapInfoSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="queryMapInfoTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="queryMapInfoSQL"></include>
+     )  m
+ </select> 
+
+<delete id="deleteMapInfo">
+   	delete from map_location_info 
+   	where 
+   	location_id in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+ <update id="updateMapInfoDail">
+	  update map_location_info set 
+		     soak = #{mapInfo.soak}
+	    where name = #{mapInfo.name}
+  </update>
+  
+  <insert id="addMapInfoDail">
+   insert into map_location_info (
+   name,
+   lon,
+   lat,
+   soak,
+   city)
+   values(
+   #{mapInfo.name},
+   #{mapInfo.lon},
+   #{mapInfo.lat},
+   #{mapInfo.soak},
+   #{mapInfo.city}
+   )
+  
+  </insert>
+ 
+</mapper>

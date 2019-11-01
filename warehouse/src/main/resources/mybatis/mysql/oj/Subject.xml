@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.oj.repository.SubjectDao">
+	<resultMap id="SubjectMap" type="com.isoftstone.oj.entity.SubjectBean">
+		<id column="subject_id" property="subjectId" />
+		<result column="subject_name" property="subjectName" />
+		<result column="subject_desc" property="subjectDesc" />
+		<result column="subject_input" property="subjectInput" />
+		<result column="subject_out" property="subjectOut" />
+		<result column="sample_input" property="sampleInput" />
+		<result column="sample_out" property="sampleOut" />
+		<result column="create_time" property="createTime" />
+		<result column="modify_time" property="modifyTime" />
+		<result column="unit_input" property="unitInput" />
+		<result column="unit_out" property="unitOut" />
+	</resultMap>
+
+	<sql id="querySubjectSQL">
+		select
+		subject_id,subject_name,subject_desc,subject_input,subject_out,sample_input,sample_out,create_time,modify_time,unit_input,unit_out
+		from t_subject where 1 = 1
+		<if test="search != null">
+			<if test="search.searchName != null and '' neq search.searchName">
+				and subject_name like CONCAT('%',#{search.searchName},'%')
+			</if>
+			<!-- <if test="search.searchCount != null and '' neq search.searchCount"> 
+				and subject_count = #{search.searchCount} </if> -->
+		</if>
+	</sql>
+
+	<select id="querySubjectList" resultMap="SubjectMap">
+		<include refid="querySubjectSQL"></include>
+		<include refid="common.jqueryPageTail"></include>
+	</select>
+
+	<select id="querySubjectTotal" resultType="Integer">
+		select COUNT(1) from (
+		<include refid="querySubjectSQL"></include>
+		) m
+	</select>
+
+	<delete id="deleteSubject">
+		delete from t_subject
+		where
+		subject_id in (
+		<foreach collection="ids" item="idItem" separator=",">
+			#{idItem}
+		</foreach>
+		)
+	</delete>
+
+	<update id="updateSubject">
+		update t_subject set
+		subject_name = #{subject.subjectName},
+		subject_desc = #{subject.subjectDesc},
+		subject_input = #{subject.subjectInput},
+		subject_out = #{subject.subjectOut},
+		sample_input = #{subject.sampleInput},
+		sample_out = #{subject.sampleOut},
+		modify_time = sysdate(),
+		unit_input = #{subject.unitInput},
+		unit_out = #{subject.unitOut}
+		where subject_id = #{subject.subjectId}
+	</update>
+
+	<insert id="addSubject">
+		insert into t_subject (
+		subject_name,
+		subject_desc,
+		subject_input,
+		subject_out,
+		sample_input,
+		sample_out,
+		create_time,
+		modify_time,
+		unit_input,
+		unit_out)
+		values(
+		#{subject.subjectName},
+		#{subject.subjectDesc},
+		#{subject.subjectInput},
+		#{subject.subjectOut},
+		#{subject.sampleInput},
+		#{subject.sampleOut},
+		sysdate(),
+		sysdate(),
+		#{subject.unitInput},
+		#{subject.unitOut}
+		)
+	</insert>
+	
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.warehouse.repository.IncomeDao">
+    <resultMap id="IncomeMap"
+               type="com.isoftstone.warehouse.entity.IncomeBean">
+        <id column="income_id" property="incomeId"/>
+        <result column="income" property="income"/>
+        <result column="year" property="year"/>
+    </resultMap>
+
+    <select id="getChartData" resultMap="IncomeMap">
+		SELECT 
+		   sum(income_money) income,
+		   year 
+		 from 
+		     (select 
+		       income_money,
+		        date_format(income_time,'%Y') year 
+		      from user_income) m
+		  where 1 =1  GROUP BY year
+    </select>
+
+    <select id="selectByEmail" resultType="java.lang.Integer">
+        select count(1)
+        from sm_user
+        where email = #{email}
+    </select>
+
+    <insert id="register">
+        insert into sm_user (account, name, password, telephone, email)
+        values (#{account}, #{name}, MD5(#{password}), #{telephone}, #{email})
+    </insert>
+
+    <update id="updatePasswordByEmail">
+        update sm_user set
+        <if test="resetPassword != null and '' neq resetPassword">
+            password = MD5(#{resetPassword})
+        </if>
+        where email= #{resetemail}
+    </update>
+</mapper>

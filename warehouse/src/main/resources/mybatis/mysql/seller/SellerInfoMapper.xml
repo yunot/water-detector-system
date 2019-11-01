@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.seller.repository.SellerInfoDao">
+ <resultMap id="SellerInfoMap" type="com.isoftstone.seller.entity.SellerInfoBean" >
+   <id column="supplierid" property="supplierid"/>
+   <result column="seller_name" property="sellerName"/>
+   <result column="linkman" property="linkman"/>
+   <result column="linktel" property="linktel"/>
+   <result column="address" property="address"/>
+ </resultMap>
+ <sql id="querySellerInfoSQL">
+    select supplierid,seller_name,linkman,linktel,address from t_fultbsupplier where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchName != null and '' neq search.searchName">
+       and seller_name like CONCAT('%',#{search.searchName},'%')
+       </if>
+       <if test="search.searchMan != null and '' neq search.searchMan">
+       and linkman like CONCAT('%',#{search.searchMan},'%')
+       </if>
+    </if>
+   
+ </sql>
+ <select id="querySellerInfoByPageList" resultMap="SellerInfoMap">
+    <include refid="querySellerInfoSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="querySellerInfoTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="querySellerInfoSQL"></include>
+     )  m
+ </select> 
+
+	<delete id="deleteSellerInfo">
+   	delete from t_fultbsupplier 
+   	where 
+   	supplierid in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+  <update id="updateSellerInfoDail">
+	  update t_fultbsupplier set 
+	   	     seller_name = #{sellerInfo.sellerName},
+		     linkman = #{sellerInfo.linkman},
+		     linktel = #{sellerInfo.linktel},
+		     address = #{sellerInfo.address}
+	    where supplierid = #{sellerInfo.supplierid}
+  </update>
+  
+  <insert id="addSellerInfoDail">
+   insert into t_fultbsupplier (
+   seller_name,
+   linkman,
+   linktel,
+   address)
+   values(
+   #{sellerInfo.sellerName},
+   #{sellerInfo.linkman},
+   #{sellerInfo.linktel},
+   #{sellerInfo.address}
+   )
+  
+  </insert>
+ 
+</mapper>

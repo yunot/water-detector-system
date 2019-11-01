@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.seller.repository.GradeItemDao">
+ <resultMap id="GradeItemInfoMap" type="com.isoftstone.seller.entity.GradeItemBean" >
+   <id column="item_id" property="itemId"/>
+   <result column="item_name" property="itemName"/>
+   <result column="item_code" property="itemCode"/>
+   <result column="prcsn" property="precision"/>
+   <result column="weight" property="weight"/>
+   <result column="remark" property="remark"/>
+ </resultMap>
+ <sql id="queryGradeItemSQL">
+    select item_id,item_name,item_code,prcsn,weight,remark from t_suppliergradeitem where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchName != null and '' neq search.searchName">
+       and item_name like CONCAT('%',#{search.searchName},'%')
+       </if>
+       <if test="search.searchCode != null and '' neq search.searchCode">
+       and item_code like CONCAT('%',#{search.searchCode},'%')
+       </if>
+    </if>
+   
+ </sql>
+ <select id="queryGradeItemByPageList" resultMap="GradeItemInfoMap">
+    <include refid="queryGradeItemSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="queryGradeItemTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="queryGradeItemSQL"></include>
+     )  m
+ </select> 
+    <delete id="deleteGradeItemInfo">
+   	delete from t_suppliergradeitem 
+   	where 
+   	item_id in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+  <update id="updateGradeItemDail">
+	  update t_suppliergradeitem set 
+	   	     item_name = #{gradeItem.itemName},
+		     item_code = #{gradeItem.itemCode},
+		     prcsn = #{gradeItem.precision},
+		     weight = #{gradeItem.weight},
+		     remark = #{gradeItem.remark}
+	    where item_id = #{gradeItem.itemId}
+  </update>
+  
+  <insert id="addGradeItemDail">
+   insert into t_suppliergradeitem (
+   item_name,
+   item_code,
+   prcsn,
+   weight,
+   remark)
+   values(
+   #{gradeItem.itemName},
+   #{gradeItem.itemCode},
+   #{gradeItem.precision},
+   #{gradeItem.weight},
+   #{gradeItem.remark}
+   )
+  
+  </insert>
+ 
+</mapper>

@@ -1,0 +1,10 @@
+.layui-btn:not(.layui-btn-lg ):not(.layui-btn-sm):not(.layui-btn-xs) {
+    height: 34px;
+    line-height: 34px;
+    padding: 0 8px;
+}
+
+.layui-table-view .layui-form-radio {
+    line-height: 0;
+    padding: 13px;
+}

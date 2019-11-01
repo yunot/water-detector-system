@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	version="2.1">
+	
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>m</short-name>
+	<uri>data.menu.name</uri>
+	
+	<tag>
+		<description>查询菜单信息</description>
+		<name>select</name>
+		<tag-class>com.isoftstone.platform.tld.MenuTag</tag-class>
+ 		<body-content>scriptless</body-content>
+ 		<attribute>
+ 			<name>list</name>
+ 			<description>菜单集合</description>
+ 			<required>true</required>
+ 			<rtexprvalue>true</rtexprvalue>
+ 		</attribute>
+	</tag>
+</taglib>

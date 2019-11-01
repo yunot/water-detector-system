@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.isoftstone.rookie.system.dictionary.dao.DictDataMapper">
+
+    <resultMap type="DictData" id="DictDataResult">
+        <id property="dictCode" column="dict_code"/>
+        <result property="dictLabel" column="inter_value"/>
+        <result property="dictValue" column="dict_value"/>
+        <result property="dictType" column="dict_type"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <sql id="selectDictDataVo">
+        select da.dict_code, di.inter_value, da.dict_value, da.dict_type, da.is_default, da.status, da.remark
+        from sys_dict_data da
+                 right join sys_i18n di on da.dict_code = di.inter_menu_id
+                 left join sys_language la on la.lang_id = di.inter_lang_id
+        where 1 = 1
+    </sql>
+
+    <select id="selectDictDataByType" parameterType="DictData"
+            resultMap="DictDataResult">
+        <include refid="selectDictDataVo"/>
+        and dict_type like CONCAT('%',#{dictType},'%') and lang_type = IFNULL(#{code},'zh')
+    </select>
+
+    <select id="selectDictLabel" resultType="String">
+        select dict_label
+        from sys_dict_data
+        where dict_type = #{dictType}
+          and dict_value =
+              #{dictValue}
+    </select>
+
+    <select id="selectDictDataById" parameterType="Long" resultMap="DictDataResult">
+        <include refid="selectDictDataVo"/>
+        and dict_code = #{dictCode}
+    </select>
+
+    <select id="countDictDataByType" resultType="Integer">
+        select count(1)
+        from sys_dict_data
+        where dict_type = #{dictType}
+    </select>
+
+</mapper> 

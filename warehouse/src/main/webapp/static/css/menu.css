@@ -1,0 +1,90 @@
+  body
+  {
+	  background-color: #a0bbec;
+	  color: white;
+  }
+  
+  .cbe-menu {
+		padding: .4em 1em .4em 20px;
+		text-decoration: none;
+		position: relative;
+	}
+	
+   .cbe-menu span.ui-icon {
+		margin: 0 5px 0 0;
+		position: absolute;
+		left: .2em;
+		top: 50%;
+		margin-top: -8px;
+	}
+	
+	.topLinkGo {
+    background-color: white;
+    text-align: center;
+    display: unset;
+    line-height: 2;
+    /* color: black; */
+}
+  .menu
+	{
+		height: 589px;
+		width: 204px;
+		background-color: white;
+		float: left;
+		display: block;
+	}
+	
+	.secondMeNu div
+	{
+		font-weight: 400;
+		color: #6E96E5;
+		font-size: 1em;
+		padding-left: 1.5em;
+		
+	}
+	
+	.firstMeNu ul div
+	{
+	  padding-left: 1em;
+	  padding-top: 1em;
+	  color: black;
+	}
+	
+
+	
+	
+	.firstMeNu ul
+	{
+		/* font-size: 0.75em; */
+		padding: 0.1em 0em 0em 0em;
+		color: #6E96E5;
+		cursor: pointer;
+	}
+	.firstMeNu ul li
+	{
+	    
+		padding: 0.125em 2em 1em 2em;
+		font-weight: 300;
+		
+	}
+	
+	.firstMeNu ul li div
+	{
+	    font-size: 0.75em;
+		
+	}
+	
+	
+	
+	.dl-second-slib{
+	left: 198px;
+    position: absolute;
+    height: 100%;
+    width: 6px;
+    cursor: pointer;
+    top: 25px;
+    /* border-left: 1px solid #C3C3D6; */
+    border-radius: 2px;
+    background: url('../images/left-slib.gif') no-repeat 0 center transparent;
+	}
+	

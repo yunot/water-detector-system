@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.isoftstone.rookie.system.organization.dao.OrganizationMapper">
+
+    <resultMap type="Organization" id="OrganizationResult">
+        <id property="orgId" column="org_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgType" column="org_type"/>
+        <result property="status" column="status"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modtime" column="modtime"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <resultMap type="com.isoftstone.platform.sm.entity.DepartmentBean" id="departMap">
+        <id column="dep_id" property="depID"/>
+        <result column="dep_name" property="depName"/>
+        <result column="dep_describe" property="depDesc"/>
+        <result column="org_id" property="orgID"/>
+        <result column="dep_par_id" property="depParID"/>
+        <result column="sort" property="sort"/>
+    </resultMap>
+
+    <resultMap id="PostdataMap" type="com.isoftstone.platform.sm.entity.PostBean">
+        <id column="post_id" property="postID"/>
+        <result column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="org_id" property="orgID"/>
+        <result column="post_name" property="postName"/>
+        <result column="post_describe" property="postDescribe"/>
+        <result column="creat_time" property="creatTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="selectOrgVo">
+        select org_id,
+               parent_id,
+               org_name,
+               org_type,
+               status,
+               modifier,
+               modtime,
+               description
+        from sys_org
+        where status = 0
+    </sql>
+
+    <select id="selectDeptByOrgId" parameterType="Organization" resultMap="departMap">
+        select de.dep_id, de.dep_name, de.dep_describe, de.org_id, de.dep_par_id, de.sort
+        from sys_department de
+                 left join sys_org org on de.org_id = org.org_id
+    </select>
+
+    <select id="selectOrgTreeByOrgId" parameterType="Long" resultMap="OrganizationResult">
+        <include refid="selectOrgVo"/>
+        and org_id = #{orgId}
+    </select>
+
+    <select id="selectPost" resultMap="PostdataMap">
+        SELECT s.post_id, s.role_id, s.org_id, s.post_name, s.post_describe, s.creat_time, s.modify_time
+        FROM sm_post s
+                 left join sys_org org on org.org_id = s.org_id where s.del_flag = '0'
+    </select>
+
+    <insert id="insertOrg" parameterType="Organization">
+        insert into sys_org (parent_id, org_name, org_type, modifier, modtime, description)
+        values (IFNULL(#{parentId}, '1'), #{orgName}, #{orgType}, #{modifier}, sysdate(), #{description})
+    </insert>
+
+    <select id="selectOrgList" parameterType="Organization" resultMap="OrganizationResult">
+        <include refid="selectOrgVo"/>
+    </select>
+
+    <delete id="deleteOrgByIds" parameterType="Long">
+        update sys_org
+        set status = 1
+        where org_id = #{orgId}
+    </delete>
+
+    <select id="selectOrgByOrgId" parameterType="Long" resultMap="OrganizationResult">
+        <include refid="selectOrgVo"/>
+        and org_id = #{orgId}
+    </select>
+
+    <update id="updateOrg">
+        update sys_org
+        set org_name    = #{orgName},
+            parent_id   = #{parentId},
+            org_type    = #{orgType},
+            modifier  = #{modifier},
+            modtime     = sysdate(),
+            description = #{description}
+        where org_id = #{orgId}
+    </update>
+
+    <update id="bindOrg">
+        update sys_org
+        set parent_id = #{parentId}
+        where org_id = #{orgId}
+    </update>
+
+    <update id="untiedOrg">
+        update sys_org
+        set parent_id = 1
+        where org_id = #{orgId}
+    </update>
+
+</mapper> 

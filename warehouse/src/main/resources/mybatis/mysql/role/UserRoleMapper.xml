@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.platform.sm.repository.UserRoleDao">
+	<resultMap id="RoledataMap" type="com.isoftstone.platform.sm.entity.RoleBean">
+		<id column="role_id" property="roleId" />
+		<result column="role_name" property="roleName"/>
+		<result column="role_describe" property="roleDescribe"/>
+		<result column="creat_time" property="creatTime"/>
+		<result column="modify_time" property="modifyTime"/>
+		<result column="english_name" property="englishName"/>
+	</resultMap>
+	
+	<resultMap id="MenuDataMap" type="com.isoftstone.platform.sm.entity.MenuBean">
+		<id column="menu_id" property="menuID" />
+		<result column="parent_id" property="parentID"/>
+		<result column="menu_type" property="menuType"/>
+		<result column="menu_name" property="menuName"/>
+		<result column="menu_url" property="menuUrl"/>
+		<result column="icon_class" property="iconClass"/>		
+	</resultMap>
+	
+		
+	<resultMap id="BaseMap" type="com.isoftstone.platform.entity.BaseSelectBean">
+		<id column="role_id" property="value" />
+		<result column="role_name" property="label"/>
+	</resultMap>
+	
+	
+	<resultMap id="UserRoleMap" type="com.isoftstone.platform.sm.entity.UserRoleBean">
+		<id column="role_id" property="roleId" />
+	</resultMap>
+	
+	<select id="getRoleDataList" resultMap="RoledataMap">
+		<include refid="queryRoleSQL"/>
+		<include refid="common.jqueryPageTail"/>
+	</select>
+	
+	<select id="getRoleDataShowList" resultMap="RoledataMap">
+		select role_id,role_name,english_name,role_describe,creat_time,modify_time from role_table 		
+	</select>
+	
+	<select id="getAll" resultMap="BaseMap">
+		select role_id,role_name from role_table 		
+	</select>
+	
+	<sql id="queryRoleSQL">
+		select role_id,role_name,english_name,role_describe,creat_time,modify_time from role_table 		
+		where del_flag = "0"
+		<if test="role != null">
+			<if test="role.searchName != null and '' neq role.searchName">
+			and role_name like CONCAT('%',#{role.searchName},'%')
+			</if>
+		</if>
+	</sql>
+	
+	<select id="queryRoleTotal" resultType="Integer">
+		select COUNT(1) from (
+		<include refid="queryRoleSQL"/>
+		) m
+	</select>
+
+ <insert id="addRole">
+   INSERT INTO role_table (
+	   role_name,
+	   role_describe,
+	   english_name,
+	   creat_time,
+	   modify_time,
+	   del_flag
+   ) 
+   VALUES 
+   (
+	   #{addRole.roleName},
+	   #{addRole.roleDescribe},
+	   #{addRole.englishName},
+	   sysdate(),
+	   sysdate(),
+	   "0"
+   )
+ </insert>
+ 
+ 
+ <update id="modifyRole">
+	  update role_table set 
+	   		 role_name = #{modifyRole.roleName},
+	  		 role_describe = #{modifyRole.roleDescribe},
+	  		 english_name = #{modifyRole.englishName},
+	  		 modify_time= sysdate()
+	   where role_id= #{modifyRole.roleId}
+ </update>
+ 
+ <select id="queryUserRole" resultMap="UserRoleMap">
+    select role_id from sm_user_ref_role 
+ </select>
+ 
+  <select id="queryRolePrivilege" resultMap="UserRoleMap">
+    select role_id from sm_role_ref_privilege 
+ </select>
+ 
+ 
+  <select id="queryRoleID" resultMap="UserRoleMap">
+	   	select role_id from role_table 
+	   	where 
+	   	role_id in (
+	   	<foreach collection="queryIDs" item="idItem"  separator=",">
+	   	   #{idItem}   	
+	   	</foreach>
+	   	) 
+ </select>
+ 
+ <delete id="deleteRole">
+	   	update  role_table set
+	   	del_flag = "1"
+	   	where 
+	   	role_id = #{deleteRole}  
+ </delete> 	
+   	
+  <delete id="deletePrivilege">
+	   	delete from sm_role_ref_privilege 
+	   	where 
+	   	role_id = #{deletePrivilege} 
+	   	
+ </delete>
+ 
+  <delete id="deleteUserRole">
+	   	delete from sm_user_ref_role 
+	   	where 
+	   	role_id = #{deleteUserRole}
+ </delete>
+ 
+  <insert id="insertMenuRefRole">
+   INSERT INTO sm_role_ref_privilege (
+	   menu_id,
+	   role_id    
+   ) 
+   VALUES 
+   (
+	  #{menuID},
+	  #{roleId}
+   )
+ </insert>
+ 
+ <delete id="deleteRoleById">
+	 delete from sm_role_ref_privilege 
+		   	where 
+		   	menu_id= #{menuID} and role_id =#{roleId}
+	  
+ </delete>
+ 
+  <select id="queryMenuListByRoleId" resultMap="MenuDataMap">
+		select menu_id from sm_role_ref_privilege where role_id = #{roleId}
+	</select>
+
+    <select id="selectRolesByUserId" parameterType="Long" resultMap="RoledataMap">
+        select distinct r.role_id, r.role_name, r.role_describe, r.creat_time, r.modify_time
+        from role_table r
+                 left join sm_user_ref_role ur on ur.role_id = r.role_id
+                 left join sm_user u on u.user_id = ur.user_id
+        WHERE ur.user_id = #{userId}
+    </select>
+ 
+ 
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.warehouse.repository.WarehouseDao">
+ <resultMap id="UserInfoMap" type="com.isoftstone.warehouse.entity.WarehouseBean" >
+   <id column="good_id" property="goodId"/>
+   <result column="good_name" property="goodName"/>
+   <result column="good_count" property="goodCount"/>
+   <result column="producer" property="producer"/>
+   <result column="good_price" property="goodPrice"/>
+ </resultMap>
+ <sql id="queryWarehouseSQL">
+    select good_id,good_name,good_count,producer,good_price from good_store where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchName != null and '' neq search.searchName">
+       and good_name like CONCAT('%',#{search.searchName},'%')
+       </if>
+       <if test="search.searchCount != null and '' neq search.searchCount">
+       and good_count = #{search.searchCount}
+       </if>
+    </if>
+   
+ </sql>
+ <select id="queryWarehouseByPageList" resultMap="UserInfoMap">
+    <include refid="queryWarehouseSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="queryWarehouseTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="queryWarehouseSQL"></include>
+     )  m
+ </select> 
+ 
+   <delete id="deleteWarehouseInfo">
+   	delete from good_store 
+   	where 
+   	good_id in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+  <update id="updateWarehouseDail">
+	  update good_store set 
+	   	     good_name = #{warehouse.goodName},
+		     good_count = #{warehouse.goodCount},
+		     producer = #{warehouse.producer},
+		     good_price = #{warehouse.goodPrice}
+	    where good_id = #{warehouse.goodId}
+  </update>
+  
+  <insert id="addWarehouseDail">
+   insert into good_store (
+   good_name,
+   good_count,
+   producer,
+   good_price)
+   values(
+   #{warehouse.goodName},
+   #{warehouse.goodCount},
+   #{warehouse.producer},
+   #{warehouse.goodPrice}
+   )
+  
+  </insert>
+ 
+ 
+</mapper>

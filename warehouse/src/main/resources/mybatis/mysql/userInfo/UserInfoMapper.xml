@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.platform.sm.repository.UserInfoDao">
+    <resultMap id="UserInfoMap"
+               type="com.isoftstone.platform.sm.entity.UserInfoBean">
+        <id column="user_id" property="userId"/>
+        <result column="account" property="account"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="gender" property="gender"/>
+        <result column="telephone" property="telephone"/>
+        <result column="email" property="email"/>
+        <result column="resetpwd" property="resetpwd"/>
+        <result column="description" property="description"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="employee_id" property="employeeid"/>
+    </resultMap>
+
+    <resultMap id="RoledataMap" type="com.isoftstone.platform.sm.entity.RoleBean">
+		<id column="role_id" property="roleId" />
+		<result column="role_name" property="roleName"/>
+		<result column="role_describe" property="roleDescribe"/>
+		<result column="creat_time" property="creatTime"/>
+		<result column="modify_time" property="modifyTime"/>
+		<result column="english_name" property="englishName"/>
+	</resultMap>
+
+
+    <select id="autoUserInfo" resultMap="UserInfoMap">
+        select user_id,
+               account,
+               name,
+               gender,
+               telephone,
+               email,
+               description,
+               creator,
+               create_time,
+               employee_id
+        from sm_user
+        where password = MD5(#{password})
+          and account = #{userName}
+    </select>
+    <sql id="queryUserSQL">
+        select user_id,account,employee_id,name,gender,telephone from sm_user where 1 = 1
+        <if test="search != null">
+            <if test="search.searchName != null and '' neq search.searchName">
+               and name like CONCAT('%',#{search.searchName},'%')
+            </if>
+            <if test="search.searchCount != null and '' neq search.searchCount">
+                and employee_id like "%"#{search.searchCount}"%"
+            </if>
+        </if>
+    </sql>
+<!--     <select id="selectByAccount" resultMap="UserInfoMap">
+        <include refid="queryUserSQL"/>
+        and account = #{account}
+    </select> -->
+    <update id="updateByAccount">
+        update sm_user
+        set password = MD5(#{userinfo.password})
+        where user_id = #{userinfo.userId}
+    </update>
+    <select id="selectByEmail" resultType="java.lang.Integer">
+        select count(1)
+        from sm_user
+        where email = #{email}
+    </select>
+    <insert id="register">
+        insert into sm_user (account, name, password, telephone,gender, email)
+        values (#{account}, #{name}, MD5(#{password}), #{telephone}, #{gender}, #{email})
+    </insert>
+
+    <update id="updatePasswordByEmail">
+        update sm_user set
+        <if test="resetPassword != null and '' neq resetPassword">
+            password = MD5(#{resetPassword})
+        </if>
+        where email= #{resetemail}
+    </update>
+    
+    
+      <select id="queryUserByPageList" resultMap="UserInfoMap">
+        <include refid="queryUserSQL"></include>
+         and user_id !=1
+        <include refid="common.jqueryPageTail"></include>
+    </select>
+
+    <select id="queryUserTotal" resultType="java.lang.Integer">
+        select COUNT(1) from (
+        <include refid="queryUserSQL"></include>
+        ) m
+    </select>
+ 
+    <delete id="deleteUserInfo">
+        delete from sm_user
+        where
+        user_id in (
+        <foreach collection="ids" item="idItem" separator=",">
+            #{idItem}
+        </foreach>
+        )
+    </delete>
+
+    <!--  <update id="updateUserDail">
+        update sm_user
+        set employee_id = #{user.employeeid},
+            name  = #{user.name},
+            gender  = #{user.gender},
+            telephone = #{user.telephone}
+        where user_id = #{user.userId}
+    </update>  -->
+    
+      <update id="updateUserinfo">
+        update sm_user
+        set account = #{user.account},
+        	employee_id = #{user.employeeid},
+            name  = #{user.name},
+            gender  = #{user.gender},
+            telephone = #{user.telephone}
+        where user_id = #{user.userId}
+    </update>
+
+    <insert id="addUserDail">
+        insert into sm_user (account,employee_id,name,password,email,gender,telephone)
+        values (#{user.account},#{user.employeeid}, #{user.name},MD5(#{user.password}),#{user.email}, #{user.gender}, #{user.telephone}) 
+
+    </insert>
+    
+     <select id="getRoleList" resultMap="RoledataMap">
+		select role_id,role_name,english_name from role_table where del_flag ="0"
+	</select>
+ 
+  <insert id="insertUserRefRole">
+   INSERT INTO sm_user_ref_role (
+	   user_id,
+	   role_id
+      
+   ) 
+   VALUES 
+   (
+	  #{userId},
+	  #{roleIds}
+   )
+ </insert>
+ 
+ <!-- <delete id="deleteUserInfo">
+        delete from sm_user
+        where
+        user_id in (
+        <foreach collection="ids" item="idItem" separator=",">
+            #{idItem}
+        </foreach>
+        )
+    </delete> -->
+ 
+ <insert id="insertUserRefPost">
+   INSERT INTO sm_post_ref_user (
+   post_id,
+   user_id
+   ) 
+   VALUES 
+   (
+	  #{postId},
+	  #{userId}
+   )
+ </insert>
+ 
+ <delete id="deleteRoleById">
+	 delete from sm_user_ref_role 
+		   	where 
+		   	role_id =#{roleId} and user_id= #{userId}
+	  
+ </delete>
+    
+ 
+  <select id="queryRoleListByUserId" resultMap="RoledataMap">
+		select role_id from sm_user_ref_role where user_id = #{userId} 
+	</select>
+    
+    
+</mapper>

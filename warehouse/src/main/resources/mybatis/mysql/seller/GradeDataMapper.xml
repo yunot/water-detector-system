@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.seller.repository.GradeDataDao">
+ <resultMap id="UserInfoMap" type="com.isoftstone.seller.entity.GradeDataBean" >
+   <id column="ID" property="id"/>
+   <result column="SYS_RES_CODE" property="sysResCode"/>
+   <result column="BUYERCODE" property="buyrCode"/>
+   <result column="ITEM_VALUE_FACT" property="itemValueFact"/>
+   <result column="ITEM_VALUE_REPORT" property="itemValueReport"/>
+   <result column="ITEM_VALUE_APPROVE" property="itemValueApprove"/>
+   <result column="STATE_ID" property="stateId"/>
+   <result column="REMARKS" property="remarks"/>
+ </resultMap>
+ 
+ <sql id="queryGradeDataSQL">
+    select ID,SYS_RES_CODE,BUYERCODE,ITEM_VALUE_FACT,ITEM_VALUE_REPORT,ITEM_VALUE_APPROVE,STATE_ID,REMARKS from t_supgradeitem_data where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchName != null and '' neq search.searchName">
+       and good_name like CONCAT('%',#{search.searchName},'%')
+       </if>
+    </if>
+ </sql>
+ 
+ <select id="queryGradeDataByPageList" resultMap="UserInfoMap">
+    <include refid="queryGradeDataSQL"></include>
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="queryGradeDataTotal" resultType="Integer">
+    select COUNT(1) from ( 
+       <include refid="queryGradeDataSQL"></include>
+     )  m
+ </select> 
+ 
+    <delete id="deleteGradeData">
+   	delete from t_supgradeitem_data 
+   	where 
+   	ID in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+  <update id="updateGradeData">
+	  update t_supgradeitem_data set 
+	   	     SYS_RES_CODE = #{gradeData.sysResCode},
+		     BUYERCODE = #{gradeData.buyrCode},
+		     ITEM_VALUE_FACT = #{gradeData.itemValueFact},
+		     ITEM_VALUE_REPORT = #{gradeData.itemValueReport},
+		     ITEM_VALUE_APPROVE = #{gradeData.itemValueApprove},
+		     STATE_ID = #{gradeData.stateId},
+		     REMARKS = #{gradeData.remarks}
+	    where ID = #{gradeData.id}
+  </update>
+  
+  <insert id="addGradeData">
+   insert into t_supgradeitem_data (
+   SYS_RES_CODE,
+   BUYERCODE,
+   ITEM_VALUE_FACT,
+   ITEM_VALUE_REPORT,
+   ITEM_VALUE_APPROVE,
+   STATE_ID,
+   REMARKS)
+   values(
+   #{gradeData.sysResCode},
+   #{gradeData.buyrCode},
+   #{gradeData.itemValueFact},
+   #{gradeData.itemValueReport},
+   #{gradeData.itemValueApprove},
+   #{gradeData.stateId},
+   #{gradeData.remarks}
+   )
+  
+  </insert>
+ 
+</mapper>

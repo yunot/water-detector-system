@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoftstone.contract.repository.ContractDeleteDao">
+    <resultMap id="ContractInfoMap"
+               type="com.isoftstone.contract.entity.ContractInfoBean">
+        <id column="docutment_info_id" property="docutmentInfoId"/>
+        <result column="docutment_info_name" property="docutmentInfoName"/>
+        <result column="docutment_head_data_id" property="docutmentHeadDataId"/>
+        <result column="docutment_body_data_id" property="docutmentBodyDataId"/>
+        <result column="docutment_pict_data_id" property="docutmentPictDataId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+   
+    <delete id="delContractInfo">
+        delete from office_document_info
+        where
+        docutment_info_id = #{infoID}
+    </delete>
+    <delete id="delContractData">
+        delete from office_document_data
+        where
+        docutment_data_id = #{dataID}
+    </delete>
+    <select id="queryContractInfo" resultMap="ContractInfoMap">
+		select docutment_head_data_id , docutment_body_data_id , docutment_pict_data_id from office_document_info
+		where docutment_info_id = #{infoID}
+	</select>
+</mapper>

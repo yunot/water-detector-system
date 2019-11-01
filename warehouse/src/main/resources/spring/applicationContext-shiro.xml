@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+ http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+ http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+ ">
+<bean id="authc" class="com.isoftstone.platform.shiro.CaptchaFormAuthentication" >
+   <property name="usernameParam" value="userName" />
+   <property name="passwordParam" value="password" />
+</bean>
+
+ <!-- Realm实现 -->
+ <bean id="userRealm" class="com.isoftstone.platform.shiro.apacheShiro.UserRealm" />
+
+ <!-- 安全管理器 -->
+ <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+  <property name="realm" ref="userRealm" />
+ </bean>
+
+ <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+  <property name="securityManager" ref="securityManager" />
+  <property name="loginUrl" value="/sm/vldtlogon" />
+  <property name="filterChainDefinitions">
+   <value>
+    /logout = logout
+    /sm/login = anon
+    /sm/logout = anon
+    /captchaCode = anon
+    /validcodeCheck = anon
+    /sm/regUser = anon
+    /static/** = anon
+    /check/** = anon
+    /contractUpload/downloadPic/** = anon
+    /** = authc
+   </value>
+  </property>
+ </bean>
+ <!-- Shiro生命周期处理器 -->
+ <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" >
+
+ </bean>
+
+
+	<bean id="logout" class=" org.apache.shiro.web.filter.authc.LogoutFilter">
+		<property name="redirectUrl" value="/sm/login" />
+	</bean>
+</beans>

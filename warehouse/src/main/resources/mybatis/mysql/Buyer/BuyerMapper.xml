@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.isoftstone.buyer.repository.BuyerDao">
+ <resultMap id="BuyerInfoMap" type="com.isoftstone.buyer.entity.BuyerBean" >
+   <id column="buyerid" property="buyerid"/>
+   <result column="name" property="name"/>
+   <result column="linkman" property="linkman"/>
+   <result column="linktel" property="linktel"/>
+   <result column="address" property="address"/>
+ </resultMap>
+ <sql id="queryBuyerSQL">
+    select buyerid,name,linkman,linktel,address from t_fultbsupplier2 where 1 = 1 
+    <if test="search != null">
+       <if test="search.searchName != null and '' neq search.searchName">
+       and name like CONCAT('%',#{search.searchName},'%')
+       </if>
+       <if test="search.searchAddress != null and '' neq search.searchAddress">
+       and address like CONCAT('%',#{search.searchAddress},'%')
+       </if>
+    </if>
+   
+ </sql>
+ <select id="queryBuyerByPageList" resultMap="BuyerInfoMap">
+    <include refid="queryBuyerSQL"></include>
+     
+    <include refid="common.jqueryPageTail"></include>
+ </select> 
+ 
+  <select id="queryBuyerTotal" resultType="java.lang.Integer">
+    select COUNT(1) from ( 
+       <include refid="queryBuyerSQL"></include>
+     )  m
+ </select> 
+ 
+  <delete id="deleteBuyerInfo">
+   	delete from t_fultbsupplier2 
+   	where 
+   	buyerid in (
+   	<foreach collection="ids" item="idItem"  separator=",">
+   	   #{idItem}   	
+   	</foreach>
+   	)
+ </delete>
+ 
+  <update id="updateBuyerDail">
+	  update t_fultbsupplier2 set 
+	   	     name = #{buyer.name},
+		     linkman = #{buyer.linkman},
+		     linktel = #{buyer.linktel},
+		     address = #{buyer.address}
+	    where buyerid = #{buyer.buyerid}
+  </update>
+  
+  <insert id="addBuyerDail">
+   insert into t_fultbsupplier2 (
+   name,
+   linkman,
+   linktel,
+   address)
+   values(
+   #{buyer.name},
+   #{buyer.linkman},
+   #{buyer.linktel},
+   #{buyer.address}
+   )
+  
+  </insert>
+
+</mapper>

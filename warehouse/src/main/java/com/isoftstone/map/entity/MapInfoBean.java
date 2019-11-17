@@ -17,7 +17,10 @@ public class MapInfoBean {
     
     @Columns("CITY")
     private String city;
-    
+
+	@Columns("ADDRESS")
+	private String address;
+
     @Columns("SOAK")
     private String soak;
 
@@ -59,6 +62,14 @@ public class MapInfoBean {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getSoak() {

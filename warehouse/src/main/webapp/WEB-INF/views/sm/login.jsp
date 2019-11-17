@@ -15,16 +15,16 @@
 console.log("${CAPTCHA_CODE_KEY}");
 
 $("body").attr('style', "background-image: url(${pageContext.request.contextPath}/static/images/loginbg/09.jpg);");
-var image = 1;
-function change(){
-		if(image>9)
-			image = 1;
-		$("body").attr('style', "background-image: url(${pageContext.request.contextPath}/static/images/loginbg/0"+image+".jpg);");
-		$("body[background-image]").fadeIn("slow");
-		image++;
+<%--var image = 1;--%>
+<%--function change(){--%>
+<%--		if(image>9)--%>
+<%--			image = 1;--%>
+<%--		$("body").attr('style', "background-image: url(${pageContext.request.contextPath}/static/images/loginbg/0"+image+".jpg);");--%>
+<%--		$("body[background-image]").fadeIn("slow");--%>
+<%--		image++;--%>
 
-}
-setInterval(change,3000);
+<%--}--%>
+<%--setInterval(change,3000);--%>
     
     if("${tip}" != null&&"${tip}" != ""){
     	alert("验证失败");
@@ -193,10 +193,10 @@ String.prototype.equalsIgnoreCase = function(anotherString) {
         	return false;
         }
         
-        function onClickCode() {
+        /*function onClickCode() {
             $("#onCode_id").attr('src', "${pageContext.request.contextPath}/captchaCode?_dc=" + (new Date()).getTime());
             $('#checkResult')[0].innerHTML = " ";
-        }
+        }*/
 
         //忘记密码进行校验
         function redirect_resetPw() {
@@ -413,9 +413,9 @@ String.prototype.equalsIgnoreCase = function(anotherString) {
                 </p>
 
                 <p class="item_1" style="height: 100px;">
-                    <input type="text" placeholder="<spring:message code='verification.code'/>" class="pass-label" name="captcha"/> 
-                    <img id="onCode_id" style="margin: 10px;" src="${pageContext.request.contextPath}/captchaCode" onClick="onClickCode();"/>
-                </p>
+                <input type="text" placeholder="<spring:message code='verification.code'/>" class="pass-label" name="captcha"/>
+                <img id="onCode_id" style="margin: 10px;" src="${pageContext.request.contextPath}/captchaCode" onClick="onClickCode();"/>
+            </p>
                 <p class="item_1">
                 	<span style="left: 10px;position: relative;" id="checkResult"></span>
                     <a id="registerUser" style="float: right;padding-right: 10px"

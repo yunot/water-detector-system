@@ -50,8 +50,8 @@ public class MapController extends BaseController
     {
         HttpSession session = request.getSession();
 
-        String key = "=sWgmCJ0TXz7xLpS5O6tgb1KttA=";
-        String devIds="531396112";
+        String key = "i4f61Ym1937Tei6G8W4cZAzcU5s=";
+        String devIds="564785374,564844586";
         /**
     	 * 批量查询设备最新数据
     	 * 参数顺序与构造函数顺序一致
@@ -79,6 +79,7 @@ public class MapController extends BaseController
 				mapInfoBean.setCity(jsonValue.get("city").toString());
 				mapInfoBean.setLon(jsonValue.get("lon").toString());
 				mapInfoBean.setLat(jsonValue.get("lat").toString());
+				mapInfoBean.setAddress(jsonValue.get("address").toString());
 				mapInfoBean.setSoak(jsonValue.get("soak").toString());
 				if (rst == null) {
 					mapInfoService.addMapInfoDail(mapInfoBean);
@@ -111,7 +112,14 @@ public class MapController extends BaseController
         
         return "map/mapLocationLog";
     }
-    
+
+//    @RequestMapping("/mapLocationCharts")
+//    public String mapLocationCharts(HttpServletRequest request)
+//    {
+//
+//        return "map/mapLocationCharts";
+//    }
+
     @RequestMapping("/mapMain")
     public String mapMain(HttpServletRequest request)
     {

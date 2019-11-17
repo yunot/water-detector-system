@@ -44,7 +44,6 @@ public class MapLogController extends BaseController{
     {
         logger.info(pagingBean);
         PadingRstType<MapLogBean> rst = mapLogService.queryMapLogList(mapLogSearch, pagingBean);
-        
         return JSON.toJSONString(rst);
     }
     

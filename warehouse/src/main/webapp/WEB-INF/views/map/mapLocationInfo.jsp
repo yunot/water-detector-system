@@ -12,7 +12,6 @@
 	}
 	.fileValue{
 		width:300px;
-
 	}
 	
 </style>
@@ -24,26 +23,55 @@ function resizePageSize(){
 	_gridWidth = $(document).width()-12;/*  -189 是去掉左侧 菜单的宽度，   -12 是防止浏览器缩小页面 出现滚动条 恢复页面时  折行的问题 */
 	_gridHeight = $(document).height()-32-80; /* -32 顶部主菜单高度，   -90 查询条件高度*/
 }
-function rowDbclick(r){
-	$(r).dblclick(
-	 function() {
-		 var columnsArray = $(r).attr('ch').split("_FG$SP_");
-		 $("#locationId").val(columnsArray[0]);
-		 $("#name").val(columnsArray[1]);
-		 $("#lon").val(columnsArray[2]);
-		 $("#lat").val(columnsArray[3]);
-		 $("#city").val(columnsArray[4]);
-		 $("#soak").val(columnsArray[5]);
-		 $("#updateMapInfoDailDialog").dialog("open");
-	 });
-	
-}
 
+// function rowDbclick(r){
+//     $(r).dblclick(
+//         function() {
+//             var columnsArray = $(r).attr('ch').split("_FG$SP_");
+//             $("#locationId").val(columnsArray[0]);
+//             $("#name").val(columnsArray[1]);
+//             $("#lon").val(columnsArray[2]);
+//             $("#lat").val(columnsArray[3]);
+//             $("#city").val(columnsArray[4]);
+//             $("#address").val(columnsArray[5]);
+//             $("#soak").val(columnsArray[6]);
+//             $("#updateMapInfoDailDialog").dialog({
+//
+//
+//                 modal : true,
+//
+//                 buttons: [
+//                     {
+//                         text: "确定",
+//                         click: function() {
+//                             $("#updateMapInfoDailFormId").submit();
+//                             //$( this ).dialog( "close" );
+//                         }
+//                     },
+//                     {
+//                         text: "取消",
+//                         click: function() {
+//                             $( this ).dialog( "close" );
+//                         }
+//                     }
+//                 ]
+//             });
+//         });
+//
+// }
+
+function rowDbclick(r){
+    $(r).dblclick(
+        function () {
+
+        }
+    )
+}
 
 $(function()
 {
 	resizePageSize();
-	var _columnWidth= (_gridWidth-240)/4;
+	var _columnWidth= (_gridWidth-390)/4;
 	
 	$("#flexiGridID").flexigrid({
 		width : _gridWidth,
@@ -51,11 +79,12 @@ $(function()
 		url : "${pageContext.request.contextPath}/mapInfo/getMapInfoList",
 		dataType : 'json',
 		colModel : [ 
-	       {display : '监测点编号',name : 'locationId',width : _columnWidth, sortable : true,align : 'center',hide : 'true'}, 
-	       {display : "监测点",name : 'name',width : _columnWidth, sortable : true,align : 'center'}, 
+	       {display : '监测点编号',name : 'locationId',width : _columnWidth, sortable : true,align : 'center',hide : 'true'},
+	       {display : "监测点",name : 'name',width : _columnWidth, sortable : true,align : 'center'},
 	       {display : "经度",name : 'lon',width : _columnWidth, sortable : true,align : 'center'}, 
 	       {display : "纬度",name : 'lat',width : _columnWidth, sortable : true,align : 'center'},
 	       {display : "城市",name : 'city',width : _columnWidth, sortable : true,align : 'center'},
+	       {display : "地址",name : 'address',width : _columnWidth, sortable : true,align : 'center'},
 	       {display : "是否水浸",name : 'soak',width : _columnWidth, sortable : true,align : 'center'}
 		],
 		resizable : false, //resizable table是否可伸缩
@@ -65,14 +94,16 @@ $(function()
 		autoload : false, //自动加载，即第一次发起ajax请求
 		hideOnSubmit : true, //是否在回调时显示遮盖
 		showcheckbox : true, //是否显示多选框
+        //onRowDbclick: rowdbclick(),
 		rowhandler : rowDbclick, //是否启用行的扩展事情功能,在生成行时绑定事件，如双击，右键等
-		rowbinddata : true,
+        rowbinddata: true,//配合上一个操作，如在双击事件中获取该行的数据
 		numCheckBoxTitle : "<spring:message code='common.selectall'/>"
-	});	
-	
+	});
+
+
 	query();
-	
-	
+
+
 	$("#queryBtn").click(function( event ) {
 		var searchCity = $("#searchCity").val();
 		var searchSoak = $("#searchSoak").val();
@@ -110,28 +141,30 @@ $(function()
 		//message(ids);
 	});
 
-	$( "#updateMapInfoDailDialog" ).dialog({
-		autoOpen : false,
-		width : 400,
-		modal : true,
-		resizable : false,
-		title: '修改页面',
-		buttons: [
-			{
-				text: "确定",
-				click: function() {
-					$("#updateMapInfoDailFormId").submit();
-					//$( this ).dialog( "close" );
-				}
-			},
-			{
-				text: "取消",
-				click: function() {
-					$( this ).dialog( "close" );
-				}
-			}
-		]
-	});
+
+
+	// $( "#updateMapInfoDailDialog" ).dialog({
+	// 	autoOpen : false,
+	// 	width : 400,
+	// 	modal : true,
+	// 	resizable : false,
+	// 	title: '修改页面',
+	// 	buttons: [
+	// 		{
+	// 			text: "确定",
+	// 			click: function() {
+	// 				$("#updateMapInfoDailFormId").submit();
+	// 				//$( this ).dialog( "close" );
+	// 			}
+	// 		},
+	// 		{
+	// 			text: "取消",
+	// 			click: function() {
+	// 				$( this ).dialog( "close" );
+	// 			}
+	// 		}
+	// 	]
+	// });
 	
 	$('#updateMapInfoDailFormId').ajaxForm({
 		dataType: "json",
@@ -143,7 +176,7 @@ $(function()
 	        message("请联系管理员");
 	     },
 		complete : function(response, status) {
-	     
+
 		}
 	});
 	
@@ -157,6 +190,9 @@ function query(param1){
     	url: '${pageContext.request.contextPath}/mapInfo/getMapInfoList'
     }).flexReload();
 }
+
+
+
 </script>
 
 </head>
@@ -170,6 +206,9 @@ function query(param1){
     <div class="tbl">
          <table id="flexiGridID" style="display: block;margin: 0px;"></table>
     </div>
-   
+
+
+
+
 </body>
 </html>

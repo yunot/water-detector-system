@@ -113,17 +113,17 @@ public class LogginController extends BaseController
     public void genValidateVode(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
-        
+
         HttpSession session = request.getSession();
         String randomString = ValidateVodeUtil.genValidateVode(response.getOutputStream());
         session.removeAttribute(CAPTCHA_CODE_KEY);
         session.removeAttribute(CAPTCHA_CODE_GEN_TIME_KEY);
-        
+
         session.setAttribute(CAPTCHA_CODE_KEY, randomString);
         session.setAttribute(CAPTCHA_CODE_GEN_TIME_KEY, new Date());
-        
+
     }
-    
+
     @RequestMapping(value = "/validcodeCheck", produces = "application/json")
     @ResponseBody
     public String validcodeCheck(@RequestParam("validcode")String validcode,HttpServletRequest request)

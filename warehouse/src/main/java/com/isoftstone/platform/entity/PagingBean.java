@@ -4,33 +4,33 @@ import java.lang.reflect.Field;
 
 /**
  * 
- * <Ò»¾ä»°¹¦ÄÜ¼òÊö>
- * <¹¦ÄÜÏêÏ¸ÃèÊö>
+ * <ä¸€å¥è¯åŠŸèƒ½ç®€è¿°>
+ * <åŠŸèƒ½è¯¦ç»†æè¿°>
  * 
  * @author  fhxin
  * @version  [CBEMS V100R002C01, 2018-10-19]
- * @see  [Ïà¹ØÀà/·½·¨]
- * @since  [²úÆ·/Ä£¿é°æ±¾]
+ * @see  [ç›¸å…³ç±»/æ–¹æ³•]
+ * @since  [äº§å“/æ¨¡å—ç‰ˆæœ¬]
  */
 public class PagingBean
 {
     /**
-     * µ±Ç°Ò³Ãæ
+     * å½“å‰é¡µé¢
      */
     private Integer page = null;
     
     /**
-     * ÈİÁ¿
+     * å®¹é‡
      */
     private Integer rp = null;
     
     /**
-     * Êı¾İµÄ¿ªÊ¼ 
+     * æ•°æ®çš„å¼€å§‹ 
      */
     private Integer start = null;
     
     /**
-     * ÅÅĞò  asc
+     * æ’åº  asc
      */
     private String sortorder =
         null;

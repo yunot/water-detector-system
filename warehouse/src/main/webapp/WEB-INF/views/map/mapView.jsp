@@ -22,7 +22,7 @@
 	<script type="text/javascript">
 	// 百度地图API功能
 	var map = new BMap.Map("allmap");    // 创建Map实例
-	map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
+	map.centerAndZoom(new BMap.Point(118.83, 31.95), 11);  // 初始化地图,设置中心点坐标和地图级别
 	//添加地图类型控件
 	map.addControl(new BMap.MapTypeControl({
 		mapTypes:[
@@ -98,7 +98,7 @@
 	addClickHandler(content,marker); */
 	
 	setTimeout(function(){
-		map.centerAndZoom(new BMap.Point(118.93255, 32.11353), 14);
+		map.centerAndZoom(new BMap.Point(118.83, 31.95), 11);
 		//map.setZoom(14);   
 	}, 500);
 	//创建小狐狸
@@ -150,9 +150,9 @@
 		for(var i=0;i<loc.length;i++){
 			var marker = new BMap.Marker(new BMap.Point(loc[i]["lon"],loc[i]["lat"]));  // 创建标注
 			p = marker.getPosition();
-			var content = "名称："+loc[i]["name"]+"<br>经度："+p.lng+"<br>纬度："+p.lat+"<br>所在城市："+loc[i]["city"]+"<br>是否水浸："+loc[i]["soak"];
+			var content = "名称："+loc[i]["name"]+/*"<br>经度："+p.lng+"<br>纬度："+p.lat+*/"<br>所在城市："+loc[i]["city"]+"<br>地址："+loc[i]["address"]+"<br>是否水浸："+loc[i]["soak"];
 			map.addOverlay(marker);               // 将标注添加到地图中
-			if(loc[i]["soak"].trim() == "是".trim()){
+			if(loc[i]["soak"].trim() == "1".trim()){
 				marker.setAnimation(BMAP_ANIMATION_BOUNCE);
 			}else{
 				marker.setAnimation();
@@ -162,8 +162,8 @@
 	}
 	//console.log(loc);
 	
-	var api = new OneNetApi('nQgGTylm=oZ1P3XxflFq=CYFi7g=');
-	var devices = [504553314,527215084,527215127,527215211,527215294];
+	var api = new OneNetApi('i4f61Ym1937Tei6G8W4cZAzcU5s=');
+	var devices = [564785374,564844586];
 	var locations = new Array();
 	
 	function getPoints(){
@@ -190,7 +190,7 @@
 			deviceId = devices[i];
 			api.getDataPoints(deviceId, {datastream_id:'location'}).done(function(data){
 			var weizhi = data.data.datastreams[0].datapoints[0].value;
-			if(weizhi.soak.trim() == "是".trim()){
+			if(weizhi.soak.trim() == "1".trim()){
 				map.clearOverlays();
 				getPoints();
 				
@@ -233,7 +233,7 @@
 		var deviceId = 504553314;
 			api.getDataPoints(deviceId, {datastream_id:'location'}).done(function(data){
 			var weizhi = data.data.datastreams[0].datapoints[0].value;
-			if(weizhi.soak.trim() == "否".trim()){
+			if(weizhi.soak.trim() == "0".trim()){
 				map.clearOverlays();
 				getPoints();
 				

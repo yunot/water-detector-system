@@ -315,7 +315,7 @@ $(function(){
 </div>
 	<div style="position: relative;z-index: 1;height: 100px;background-color: #DFE8F6;border: 1px solid #99bce8;">
 
-<a href="http://www.njupt.edu.cn/"><img id="onCode_id" style="margin: 10px;" src="${pageContext.request.contextPath}/static/images/nylogo.png"/></a>
+<img id="onCode_id" style="margin: 10px;" src="${pageContext.request.contextPath}/static/images/nylogo.png"/>
 
 	<div style="float: right;color: #316ac5; font-size: 20px;padding-right: 100px;padding-top: 20px;cursor: pointer;">
  		  <ul  class="topLink" style="position: absolute; margin-left: -90px;list-style: none;">
@@ -348,7 +348,9 @@ $(function(){
 				<li class="map-menu-item">地图展示</li>
 				<li class="map-menu-item">当前监测点</li>
 				<li
-					class="map-menu-item ivu-menu-item-active">预警日志</li>
+					class="map-menu-item ">预警日志</li>
+<%--                <li class="map-menu-item">监测图表分析</li>--%>
+
 			</ul>
 		</div>
 		<div class="iframe-border">
@@ -372,9 +374,11 @@ $(function(){
 			  document.getElementsByTagName('iframe').mapFrame.src = "${pageContext.request.contextPath}/map/mapView";
 		  }else if(!this.innerText.localeCompare('当前监测点')){
 			  document.getElementsByTagName('iframe').mapFrame.src = "${pageContext.request.contextPath}/map/mapLocationInfo";
-		  }else{
+		  }else if(!this.innerText.localeCompare('预警日志')){
 			  document.getElementsByTagName('iframe').mapFrame.src = "${pageContext.request.contextPath}/map/mapLocationLog";
-		  }
+		  }else{
+              document.getElementsByTagName('iframe').mapFrame.src = "${pageContext.request.contextPath}/map/mapLocationCharts";
+          }
 		});
 	 
 	</script>

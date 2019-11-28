@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>毕业设计</title>
+<title>城市地表水浸水位监测系统</title>
 <style type="text/css">
 body{
 	background-image: url(${pageContext.request.contextPath}/static/images/loginbg/12.jpg);

@@ -10,7 +10,7 @@
 	#allmap {height: 90%;bottom: -10%;}
 	</style>
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aN9G7RoGgFolZKSZAE1knWt43ZV52xnW"></script>
-	<title>毕业设计</title>
+	<title>城市地表水浸水位监测系统</title>
 </head>
 <body>
 	<div>南京邮电大学毕业设计展示</div>

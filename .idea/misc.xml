@@ -10,7 +10,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/warehouse/pom.xml" />
-        <option value="$USER_HOME$/Documents/Tencent Files/1403865996/FileRecv/javaSDK/javaSDK/pom.xml" />
+        <option value="$PROJECT_DIR$/../javaSDK/javaSDK/pom.xml" />
       </list>
     </option>
   </component>

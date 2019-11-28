@@ -13,7 +13,7 @@
 	</style>
 	<script src="${pageContext.request.contextPath}/static/sdk.min.js" type="text/javascript"></script>
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aN9G7RoGgFolZKSZAE1knWt43ZV52xnW"></script>
-	<title>毕业设计</title>
+	<title>城市地表水浸水位监测系统</title>
 </head>
 <body>
 	
@@ -22,13 +22,13 @@
 	<script type="text/javascript">
 	// 百度地图API功能
 	var map = new BMap.Map("allmap");    // 创建Map实例
-	map.centerAndZoom(new BMap.Point(118.83, 31.95), 11);  // 初始化地图,设置中心点坐标和地图级别
+	map.centerAndZoom(new BMap.Point(118.937645, 32.123554), 15);  // 初始化地图,设置中心点坐标和地图级别
 	//添加地图类型控件
 	map.addControl(new BMap.MapTypeControl({
 		mapTypes:[
             BMAP_NORMAL_MAP,
             BMAP_HYBRID_MAP
-        ]}));	  
+        ]}));
 	//map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
 	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 	
@@ -91,14 +91,14 @@
 			enableMessage:true//设置允许信息窗发送短息
 		   };
 	
-	/* var marker = new BMap.Marker(new BMap.Point("${lon}", "${lat}")); // 创建点
-	map.addOverlay(marker);//增加点
-	var p = marker.getPosition();       //获取marker的位置
-	var content = "lon:"+p.lng+"<br>lat:"+p.lat;
-	addClickHandler(content,marker); */
+	<%--/* var marker = new BMap.Marker(new BMap.Point("${lon}", "${lat}")); // 创建点--%>
+	<%--map.addOverlay(marker);//增加点--%>
+	<%--var p = marker.getPosition();       //获取marker的位置--%>
+	<%--var content = "lon:"+p.lng+"<br>lat:"+p.lat;--%>
+	<%--addClickHandler(content,marker); */--%>
 	
 	setTimeout(function(){
-		map.centerAndZoom(new BMap.Point(118.83, 31.95), 11);
+		map.centerAndZoom(new BMap.Point(118.937645, 32.123554), 15);
 		//map.setZoom(14);   
 	}, 500);
 	//创建小狐狸
@@ -150,7 +150,7 @@
 		for(var i=0;i<loc.length;i++){
 			var marker = new BMap.Marker(new BMap.Point(loc[i]["lon"],loc[i]["lat"]));  // 创建标注
 			p = marker.getPosition();
-			var content = "名称："+loc[i]["name"]+/*"<br>经度："+p.lng+"<br>纬度："+p.lat+*/"<br>所在城市："+loc[i]["city"]+"<br>地址："+loc[i]["address"]+"<br>是否水浸："+loc[i]["soak"];
+			var content = "名称："+loc[i]["name"]+/*"<br>经度："+p.lng+"<br>纬度："+p.lat+*/"<br>所在城市："+loc[i]["city"]+"<br>地址："+loc[i]["address"]+"<br>是否水浸："+loc[i]["soak"]+"<br>水位："+loc[i]["level"];
 			map.addOverlay(marker);               // 将标注添加到地图中
 			if(loc[i]["soak"].trim() == "1".trim()){
 				marker.setAnimation(BMAP_ANIMATION_BOUNCE);
@@ -161,7 +161,7 @@
 		}
 	}
 	//console.log(loc);
-	
+
 	var api = new OneNetApi('i4f61Ym1937Tei6G8W4cZAzcU5s=');
 	var devices = [564785374,564844586];
 	var locations = new Array();
@@ -236,7 +236,7 @@
 			if(weizhi.soak.trim() == "0".trim()){
 				map.clearOverlays();
 				getPoints();
-				
+
 				setTimeout(function(){
 					addPoints(locations);
 					locations.splice(0,locations.length);
@@ -256,7 +256,7 @@
 	var intervalProcess2;
 	
 	
-	
+
 </script>
 </body>
 </html>

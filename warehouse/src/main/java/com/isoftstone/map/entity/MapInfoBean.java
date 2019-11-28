@@ -24,6 +24,9 @@ public class MapInfoBean {
     @Columns("SOAK")
     private String soak;
 
+    @Columns("LEVEL")
+	private String level;
+
 	public int getLocationId() {
 		return locationId;
 	}
@@ -78,5 +81,13 @@ public class MapInfoBean {
 
 	public void setSoak(String soak) {
 		this.soak = soak;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 }

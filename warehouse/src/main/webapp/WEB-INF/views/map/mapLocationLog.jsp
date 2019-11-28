@@ -55,7 +55,7 @@ $(function()
 	       {display : "监测点",name : 'name',width : _columnWidth, sortable : true,align : 'center'}, 
 	       {display : "经度",name : 'lon',width : _columnWidth, sortable : true,align : 'center'}, 
 	       {display : "纬度",name : 'lat',width : _columnWidth, sortable : true,align : 'center'},
-	       {display : "城市",name : 'city',width : _columnWidth, sortable : true,align : 'center'},
+	       {display : "地区",name : 'city',width : _columnWidth, sortable : true,align : 'center'},
 	       {display : "预警时间",name : 'logDatetime',width : _columnWidth, sortable : true,align : 'center'}
 		],
 		resizable : false, //resizable table是否可伸缩

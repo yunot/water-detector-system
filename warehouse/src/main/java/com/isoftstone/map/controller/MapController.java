@@ -81,6 +81,7 @@ public class MapController extends BaseController
 				mapInfoBean.setLat(jsonValue.get("lat").toString());
 				mapInfoBean.setAddress(jsonValue.get("address").toString());
 				mapInfoBean.setSoak(jsonValue.get("soak").toString());
+				mapInfoBean.setLevel(jsonValue.get("level").toString());
 				if (rst == null) {
 					mapInfoService.addMapInfoDail(mapInfoBean);
 				}else {

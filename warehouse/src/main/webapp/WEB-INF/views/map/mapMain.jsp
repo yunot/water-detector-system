@@ -8,7 +8,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>毕业设计</title>
+	<title>城市地表水浸水位监测系统</title>
 	<style>
 	body, html {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
 	#allmap {height: 100%;width: 90%;float: right;overflow: inherit;margin:0;font-family:"微软雅黑";}
@@ -315,7 +315,7 @@ $(function(){
 </div>
 	<div style="position: relative;z-index: 1;height: 100px;background-color: #DFE8F6;border: 1px solid #99bce8;">
 
-<img id="onCode_id" style="margin: 10px;" src="${pageContext.request.contextPath}/static/images/nylogo.png"/>
+<img id="onCode_id" style="margin: 10px;" src="${pageContext.request.contextPath}/static/images/logo.png"/>
 
 	<div style="float: right;color: #316ac5; font-size: 20px;padding-right: 100px;padding-top: 20px;cursor: pointer;">
  		  <ul  class="topLink" style="position: absolute; margin-left: -90px;list-style: none;">

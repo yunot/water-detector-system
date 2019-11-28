@@ -71,7 +71,7 @@ function rowDbclick(r){
 $(function()
 {
 	resizePageSize();
-	var _columnWidth= (_gridWidth-390)/4;
+	var _columnWidth= (_gridWidth-480)/4;
 	
 	$("#flexiGridID").flexigrid({
 		width : _gridWidth,
@@ -85,7 +85,8 @@ $(function()
 	       {display : "纬度",name : 'lat',width : _columnWidth, sortable : true,align : 'center'},
 	       {display : "城市",name : 'city',width : _columnWidth, sortable : true,align : 'center'},
 	       {display : "地址",name : 'address',width : _columnWidth, sortable : true,align : 'center'},
-	       {display : "是否水浸",name : 'soak',width : _columnWidth, sortable : true,align : 'center'}
+	       {display : "是否水浸",name : 'soak',width : _columnWidth, sortable : true,align : 'center'},
+	       {display : "水位高度",name : 'level',width : _columnWidth, sortable : true,align : 'center'}
 		],
 		resizable : false, //resizable table是否可伸缩
 		usepager : true,

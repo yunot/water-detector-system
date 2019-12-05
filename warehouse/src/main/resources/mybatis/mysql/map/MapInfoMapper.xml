@@ -50,8 +50,13 @@
  </delete>
  
  <update id="updateMapInfoDail">
-	  update map_location_info set 
-		     soak = #{mapInfo.soak}
+	  update map_location_info set
+	         lon = #{mapInfo.lon},
+	         lat = #{mapInfo.lat},
+		     soak = #{mapInfo.soak},
+		     city = #{mapInfo.city},
+		     address = #{mapInfo.address},
+		     level = #{mapInfo.level}
 	    where name = #{mapInfo.name}
   </update>
   

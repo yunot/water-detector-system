@@ -89,6 +89,11 @@ public class MapController extends BaseController
 						System.out.println(rst.getRawRecords().get(0).getSoak().equals(jsonValue.get("soak")));
 						mapInfoService.updateMapInfoDail(mapInfoBean);
 					}
+					if (!rst.getRawRecords().get(0).getLevel().equals(jsonValue.get("level"))) {
+						System.out.println(rst.getRawRecords().get(0).getLevel().equals(jsonValue.get("level")));
+						mapInfoService.updateMapInfoDail(mapInfoBean);
+					}
+
 				}
 				
 				sBuffer.append(jsonValue+",");

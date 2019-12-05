@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/Font-Awesome-master/css/font-awesome.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/zTree3.3/css/zTreeStyle/zTreeStyle.css" type="text/css">
-<link rel="shortcut icon" href="${pageContext.request.contextPath}/static/images/logo-top.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/static/images/logo.ico" type="image/x-icon"/>
 <script language="javascript" type="text/javascript" src="${pageContext.request.contextPath}/static/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/grid/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/grid/js/jquery.form.js"></script>
